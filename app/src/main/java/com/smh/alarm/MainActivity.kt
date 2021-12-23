@@ -1,8 +1,12 @@
 package com.smh.alarm
 
+import android.app.TimePickerDialog
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.core.content.edit
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,9 +38,40 @@ class MainActivity : AppCompatActivity() {
         changeAlarmButton.setOnClickListener {
             //현재시간을 가져옴.
             //TimePickerDialog 사용해서 시간을 설정, 그시간을 가져옴
-            // 데이터 저장
-            // 뷰 업데이트
-            //기존에 있던 알람 삭제.
+
+            val calendar = Calendar.getInstance()
+
+            TimePickerDialog(this, { picker, hour, minute ->
+
+                val model = saveAlarmModel(hour, minute, false)
+
+                // 데이터 저장
+                // 뷰 업데이트
+                //기존에 있던 알람 삭제.
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false).show()
+
         }
     }
+
+    private fun saveAlarmModel(
+        hour: Int,
+        minute: Int,
+        onOff: Boolean
+    ): AlarmDisplayModel {
+        val model = AlarmDisplayModel(
+            hour = hour,
+            minute = minute,
+            onOff = false
+        )
+
+        val sharedPreferences = getSharedPreferences("time", Context.MODE_PRIVATE)
+
+        with(sharedPreferences.edit()) {
+            putString("alarm", model.makeDataForDB())
+            putBoolean("onOff", model.onOff)
+            commit()
+        }
+        return model
+    }
+
 }

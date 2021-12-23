@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Alarm</string>
+    <string name="changeAlarmTimeString">시간 재설정</string>
 </resources>
